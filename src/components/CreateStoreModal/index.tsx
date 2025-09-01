@@ -20,10 +20,11 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:3000/stores", {
+      await axios.post("http://localhost:3883/lojas", {
         cnpj,
         filial,
         cliente,
+        marca,
         status: "Ativo",
       });
 
@@ -46,7 +47,7 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
           placeholder="CNPJ"
           value={cnpj}
           onChange={(e) => setCnpj(e.target.value)}
-          className="w-full border p-2 rounded mb-2"
+          className="w-full border p-2 rounded mb-2 border-gray-300"
         />
 
         <input
@@ -54,7 +55,7 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
           placeholder="Marca"
           value={marca}
           onChange={(e) => setMarca(e.target.value)}
-          className="w-full border p-2 rounded mb-2"
+          className="w-full border p-2 rounded mb-2 border-gray-300"
         />
 
         <input
@@ -62,7 +63,7 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
           placeholder="Filial"
           value={filial}
           onChange={(e) => setFilial(e.target.value)}
-          className="w-full border p-2 rounded mb-2"
+          className="w-full border p-2 rounded mb-2 border-gray-300"
         />
 
         <input
@@ -70,20 +71,20 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
           placeholder="Cliente"
           value={cliente}
           onChange={(e) => setCliente(e.target.value)}
-          className="w-full border p-2 rounded mb-2"
+          className="w-full border p-2 rounded mb-2 border-gray-300"
         />
 
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 mt-4">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+            className="px-4 py-2 rounded transition bg-gray-200 hover:bg-gray-300 cursor-pointer"
           >
             Cancelar
           </button>
           <button
             onClick={handleCreate}
             disabled={loading}
-            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-2 rounded transition text-white bg-[#D000FF] hover:bg-[#9f00c2] disabled:opacity-50 cursor-pointer"
           >
             {loading ? "Salvando..." : "Salvar"}
           </button>

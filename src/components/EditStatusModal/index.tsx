@@ -20,7 +20,10 @@ interface EditStatusModalProps {
 
 export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalProps) {
   const [status, setStatus] = useState(store?.status || "");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [numeroChamado, setNumeroChamado] = useState("");
+  const [motivo, setMotivo] = useState("");
+  const [responsavel, setResponsavel] = useState("");
 
   const handleSave = async () => {
     setLoading(true)
@@ -51,27 +54,76 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
         </div>
 
         <label className="block mb-2 font-medium">Status</label>
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className="w-full border rounded-lg p-2 mb-4"
-        >
-          <option value="Ativo">Ativo</option>
-          <option value="Inativo">Inativo</option>
-        </select>
+        <div className="flex gap-2 mb-3">
+          <button
+            type="button"
+            onClick={() => setStatus("Ativo")}
+            className={`cursor-pointer px-4 py-2 rounded-md border transition ${status === "Ativo"
+              ? "bg-green-500 text-white border-green-600"
+              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+              }`}
+          >
+            Ativo
+          </button>
+          <button
+            type="button"
+            onClick={() => setStatus("Inativo")}
+            className={`cursor-pointer px-4 py-2 rounded-md border transition ${status === "Inativo"
+              ? "bg-red-500 text-white border-red-600"
+              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+              }`}
+          >
+            Inativo
+          </button>
+        </div>
+
+
+        <div className={`space-y-3 mb-4 transition-all duration-300 overflow-hidden ${status === "Inativo" ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}>
+          <div>
+            <label className="block text-sm font-medium">
+              Número do chamado
+            </label>
+            <input
+              type="text"
+              value={numeroChamado}
+              onChange={(e) => setNumeroChamado(e.target.value)}
+              className="w-full border rounded-md px-3 py-2 border-gray-300"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Responsável</label>
+            <input
+              type="text"
+              value={responsavel}
+              onChange={(e) => setResponsavel(e.target.value)}
+              className="w-full border rounded-md px-3 py-2 border-gray-300"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Motivo</label>
+            <textarea
+              value={motivo}
+              onChange={(e) => setMotivo(e.target.value)}
+              className="w-full border rounded-md px-3 py-2 h-36 border-gray-300"
+            />
+          </div>
+        </div>
 
         <div className="flex justify-end gap-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 transition">
+            className="cursor-pointer px-4 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition">
             Cancelar
           </button>
           <button
             onClick={handleSave}
             disabled={loading}
-            className={`px-4 py-2 rounded-lg text-white transition ${loading
-              ? "bg-blue-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
+            className={`cursor-pointer px-4 py-2 rounded-lg text-white transition ${loading
+              ? "bg-[#ea91fa] cursor-not-allowed"
+              : "bg-[#D000FF] hover:bg-[#9f00c2]"
               }`}
           >
             {loading ? "Salvando..." : "Salvar"}

@@ -59,9 +59,9 @@ export function Painel() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto bg-">
-      <h1 className="text-2xl font-bold mb-4">
-        <div className="flex items-center gap-1">
-          <ChartBarIcon className="w-6 h-6 text-gray-600" /> Controle de Lojas
+      <h1 className="text-2xl font-bold mb-10">
+        <div className="flex items-center gap-3">
+          <img src="/sintese.svg" alt="" className="w-6 h-6 rounded-sm" /> Controle de Lojas
         </div>
       </h1>
 
@@ -74,7 +74,7 @@ export function Painel() {
           onChange={(e) => setSearch(e.target.value)}
         />
         <div className="flex justify-center gap-6">
-          <button className="cursor-pointer px-3 py-1 rounded-full border border-gray-400 text-black text-sm font-medium transition bg-gray-200 hover:bg-gray-300" onClick={reloadStore}>
+          <button className="cursor-pointer px-3 py-1 rounded-full border border-gray-400 text-gray-600 text-sm font-medium transition bg-white hover:bg-purple-100" onClick={reloadStore}>
             <div className="flex items-center gap-1">
               <ArrowPathIcon className="w-5 h-5 text-gray-600" /> Atualizar
             </div>
@@ -91,9 +91,9 @@ export function Painel() {
       </div>
 
       {/* Tabela */}
-      <div className="max-h-[75vh] overflow-y-auto border rounded-2xl shadow-md">
+      <div className="max-h-[75vh] overflow-y-auto border rounded-lg shadow-md">
         <table className="w-full border-collapse">
-          <thead className="bg-gray-300 sticky top-0">
+          <thead className="bg-purple-100 sticky top-0">
             <tr>
               <th className="p-3 text-left">Cliente</th>
               <th className="p-3 text-left">Marca</th>
@@ -106,7 +106,7 @@ export function Painel() {
           <tbody>
             {lojasFiltradas.length > 0 ? (
               lojasFiltradas.map((loja, index) => (
-                <tr key={index} className="border-t">
+                <tr key={index} className="border-t odd:bg-white even:bg-gray-50">
                   <td className="p-3">{loja.cliente}</td>
                   <td className="p-3">{loja.marca}</td>
                   <td className="p-3">{loja.filial}</td>

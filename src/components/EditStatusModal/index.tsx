@@ -28,7 +28,7 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
   const handleSave = async () => {
     setLoading(true)
     try {
-      await axios.put(`http://localhost:3883/lojas`, {
+      await axios.put(`https://api-lojas-2025.onrender.com/lojas/`, {
         id: store.cnpj,
         novoStatus: status,
       });

@@ -20,7 +20,7 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:3883/lojas", {
+      await axios.post("https://api-lojas-2025.onrender.com/lojas/", {
         cnpj,
         filial,
         cliente,

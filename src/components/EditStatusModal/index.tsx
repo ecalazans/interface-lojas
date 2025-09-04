@@ -10,6 +10,9 @@ interface StoreProps {
   data_encerramento: string,
   status: string,
   observacoes: string
+  chamado?: string,
+  responsavel?: string,
+  motivo?: string,
 }
 
 interface EditStatusModalProps {
@@ -21,16 +24,24 @@ interface EditStatusModalProps {
 export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalProps) {
   const [status, setStatus] = useState(store?.status || "");
   const [loading, setLoading] = useState(false);
-  const [numeroChamado, setNumeroChamado] = useState("");
-  const [motivo, setMotivo] = useState("");
-  const [responsavel, setResponsavel] = useState("");
+
+  const [numeroChamado, setNumeroChamado] = useState(store?.chamado || "");
+  const [motivo, setMotivo] = useState(store?.motivo || "");
+  const [responsavel, setResponsavel] = useState(store?.responsavel || "");
 
   const handleSave = async () => {
+    if (!numeroChamado || !motivo || !responsavel) {
+      return alert('Para salvar é preciso informar o número do chamado, responsável e motivo.')
+    }
+
     setLoading(true)
     try {
       await axios.put(`https://api-lojas-2025.onrender.com/lojas/`, {
         id: store.cnpj,
         novoStatus: status,
+        chamado: numeroChamado,
+        responsavel,
+        motivo
       });
       onUpdated();
       onClose();

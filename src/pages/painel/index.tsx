@@ -15,7 +15,10 @@ interface StoreProps {
   data_inauguracao: string,
   data_encerramento: string,
   status: string,
-  observacoes: string
+  observacoes: string,
+  chamado: string,
+  responsavel: string,
+  motivo: string,
 }
 
 export function Painel() {
@@ -29,7 +32,6 @@ export function Painel() {
 
   const [loading, setLoading] = useState(true)
   const [errorApi, setErrorApi] = useState<string | null>(null)
-
 
   // Carregar lojas da API
   const fetchLojas = async () => {
@@ -73,6 +75,14 @@ export function Painel() {
       loja.cliente?.toLowerCase().includes(search.toLowerCase())
   );
   // console.log(lojasFiltradas)
+
+  const lojasAtivas = lojasFiltradas.filter(
+    (loja) => loja.status === "Ativo"
+  )
+
+  const lojasInativas = lojasFiltradas.filter(
+    (loja) => loja.status === "Inativo"
+  )
 
   if (errorApi) {
     return (
@@ -129,13 +139,24 @@ export function Painel() {
       {/* Barra de busca */}
       {/* Renderiza só se não estiver carregando os dados da API */}
       {!loading && !errorApi && (
-        <div className="flex justify-between gap-2 mb-4">
+        <div className="flex items-center justify-between gap-2 mb-4">
           <input
             className="rounded-full border border-gray-400 p-2 w-2xs"
-            placeholder="Buscar por CNPJ ou Filial"
+            placeholder="Buscar por CNPJ, Filial ou Cliente"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          <div className="flex justify-center gap-4">
+            <span className="text-sm text-gray-600">
+              Total encontrado: <strong>{lojasFiltradas.length}</strong>
+            </span>
+            <span className="text-sm text-gray-600">
+              Total ativo: <strong>{lojasAtivas.length}</strong>
+            </span>
+            <span className="text-sm text-gray-600">
+              Total inativo: <strong>{lojasInativas.length}</strong>
+            </span>
+          </div>
           <div className="flex justify-center gap-6">
             <button className="cursor-pointer px-3 py-1 rounded-full border border-gray-400 text-gray-600 text-sm font-medium transition bg-white hover:bg-purple-100" onClick={reloadStore}>
               <div className="flex items-center gap-1">

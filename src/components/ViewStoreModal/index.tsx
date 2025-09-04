@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface StoreProps {
   cliente: string,
   marca: string,
@@ -6,7 +8,10 @@ interface StoreProps {
   data_inauguracao: string,
   data_encerramento: string,
   status: string,
-  observacoes: string
+  observacoes: string,
+  chamado: string,
+  responsavel: string,
+  motivo: string,
 }
 
 interface ViewStoreModalProps {
@@ -15,6 +20,8 @@ interface ViewStoreModalProps {
 }
 
 export function ViewStoreModal({ store, onClose }: ViewStoreModalProps) {
+  const [status, setStatus] = useState(store?.status || "")
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="p-6 w-full max-w-md bg-white rounded-2xl shadow-lg">
@@ -29,8 +36,8 @@ export function ViewStoreModal({ store, onClose }: ViewStoreModalProps) {
             <span className="text-gray-800">{store.filial}</span>
           </div>
           <div>
-            <span className="block text-gray-500 font-medium">Cliente</span>
-            <span className="text-gray-800">{store.cliente}</span>
+            <span className="block text-gray-500 font-medium">Marca</span>
+            <span className="text-gray-800">{store.marca}</span>
           </div>
           <div>
             <span className="block text-gray-500 font-medium">Status</span>
@@ -42,8 +49,26 @@ export function ViewStoreModal({ store, onClose }: ViewStoreModalProps) {
             >
               {store.status}
             </span>
-
           </div>
+
+          {/* Só aparece se estiver inativa */}
+          {store.status === "Inativo" && (
+            <div className="col-span-2 grid grid-cols-2 gap-4 text-sm pt-4">
+              <div>
+                <span className="block text-gray-500 font-medium">Chamado</span>
+                <span className="text-gray-800">{store.chamado}</span>
+              </div>
+              <div>
+                <span className="block text-gray-500 font-medium">Responsável</span>
+                <span className="text-gray-800">{store.responsavel}</span>
+              </div>
+              <div className="col-span-2">
+                <span className="block text-gray-500 font-medium">Motivo</span>
+                <span className="text-gray-800">{store.motivo}</span>
+              </div>
+            </div>
+          )}
+
 
         </div>
 

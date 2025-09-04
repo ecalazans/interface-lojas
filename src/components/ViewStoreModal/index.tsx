@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface StoreProps {
   cliente: string,
   marca: string,
@@ -20,7 +18,6 @@ interface ViewStoreModalProps {
 }
 
 export function ViewStoreModal({ store, onClose }: ViewStoreModalProps) {
-  const [status, setStatus] = useState(store?.status || "")
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">

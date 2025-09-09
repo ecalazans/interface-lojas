@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { formatCnpj } from "../../utils/formatCnpj";
 
 interface ModalCreateStoreProps {
   isOpen: boolean;
@@ -17,6 +18,10 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
   if (!isOpen) return null;
 
   const handleCreate = async () => {
+    if (!cnpj || !filial || !cliente! || marca) {
+      return alert("É obrigatório o preenchimento de todos os campos")
+    }
+
     try {
       setLoading(true);
 
@@ -37,6 +42,11 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
     }
   };
 
+  // remove caracteres não numéricos
+  const handleChangeCnpj = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCnpj(e.target.value.replace(/\D/g, ""));
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 bg-opacity-40 flex items-center justify-center">
       <div className="bg-white rounded-xl shadow-lg p-6 w-96">
@@ -44,11 +54,14 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
 
         <input
           type="text"
-          placeholder="CNPJ"
-          value={cnpj}
-          onChange={(e) => setCnpj(e.target.value)}
+          value={formatCnpj(cnpj)}
+          onChange={handleChangeCnpj}
           className="w-full border p-2 rounded mb-2 border-gray-300"
+          maxLength={18}
+          placeholder="CNPJ"
         />
+
+
 
         <input
           type="text"

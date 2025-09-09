@@ -1,3 +1,5 @@
+import { formatCnpj } from "../../utils/formatCnpj";
+
 interface StoreProps {
   cliente: string,
   marca: string,
@@ -10,6 +12,7 @@ interface StoreProps {
   chamado: string,
   responsavel: string,
   motivo: string,
+  date_update: string,
 }
 
 interface ViewStoreModalProps {
@@ -26,7 +29,11 @@ export function ViewStoreModal({ store, onClose }: ViewStoreModalProps) {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="block text-gray-500 font-medium">CNPJ</span>
-            <span className="text-gray-800">{store.cnpj}</span>
+            <span className="text-gray-800">{formatCnpj(store.cnpj)}</span>
+          </div>
+          <div>
+            <span className="block text-gray-500 font-medium">Última atualização</span>
+            <span className="text-gray-800">{store.date_update || "Nunca atualizado"}</span>
           </div>
           <div>
             <span className="block text-gray-500 font-medium">Filial</span>

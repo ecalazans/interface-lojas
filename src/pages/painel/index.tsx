@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { EyeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon, PlusIcon } from "@heroicons/react/24/solid";
 
+import { EyeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { EditStatusModal } from "../../components/EditStatusModal";
 import { ModalCreateStore } from "../../components/CreateStoreModal";
 import { ViewStoreModal } from "../../components/ViewStoreModal";
 import { DeleteStoreModal } from "../../components/DeleteStoreModal";
+import { formatCnpj } from "../../utils/formatCnpj";
 
 interface StoreProps {
   cliente: string,
@@ -19,10 +20,12 @@ interface StoreProps {
   chamado: string,
   responsavel: string,
   motivo: string,
+  date_update: string,
 }
 
 export function Painel() {
   const [lojas, setLojas] = useState<StoreProps[]>([]);
+  console.log(lojas)
   const [search, setSearch] = useState("");
 
   const [selectedStore, setSelectedStore] = useState<StoreProps | null>(null);
@@ -185,6 +188,7 @@ export function Painel() {
                 <th className="p-3 text-left">Marca</th>
                 <th className="p-3 text-left">Filial</th>
                 <th className="p-3 text-left">CNPJ</th>
+                <th className="p-3 text-left">Tipo</th>
                 <th className="p-3 text-left">Status</th>
                 <th className="p-3 text-center">Ações</th>
               </tr>
@@ -196,7 +200,8 @@ export function Painel() {
                     <td className="p-3">{loja.cliente}</td>
                     <td className="p-3">{loja.marca}</td>
                     <td className="p-3">{loja.filial}</td>
-                    <td className="p-3">{loja.cnpj}</td>
+                    <td className="p-3">{formatCnpj(loja.cnpj)}</td>
+                    <td className="p-3">{"Franquia / Própria"}</td>
                     <td className="p-3">
                       <span
                         className={`px-3 py-1 rounded-full text-white text-sm font-medium ${loja.status === "Ativo"

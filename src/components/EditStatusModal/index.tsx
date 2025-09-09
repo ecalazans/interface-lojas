@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { formatCnpj } from "../../utils/formatCnpj";
 
 interface StoreProps {
   cliente: string,
@@ -30,8 +31,39 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
   const [responsavel, setResponsavel] = useState(store?.responsavel || "");
 
   const handleSave = async () => {
+    const statusAtual = store?.status
+    const novoStatus = status
+
+    const chamadoAtual = store?.chamado
+    const novoChamado = numeroChamado
+
+    const motivoAtual = store?.motivo
+    const novoMotivo = motivo
+
+    const responsavelAtual = store?.responsavel
+    const novoResponsavel = responsavel
+
+    if (statusAtual === novoStatus && novoStatus === "Ativo") {
+      alert("Nenhuma alteração detectada");
+      return
+    }
+
+    if (novoStatus === "Inativo") {
+      const mudouAlgo =
+        statusAtual !== novoStatus ||
+        chamadoAtual !== novoChamado ||
+        motivoAtual !== novoMotivo ||
+        responsavelAtual !== novoResponsavel;
+
+      if (!mudouAlgo) {
+        alert("Nenhuma alteração detectada nos campos")
+        return
+      }
+    }
+
     if (!numeroChamado || !motivo || !responsavel) {
-      return alert('Para salvar é preciso informar o número do chamado, responsável e motivo.')
+      alert("Preencha número do chamado, responsável e motivo antes de salvar.");
+      return
     }
 
     setLoading(true)
@@ -61,7 +93,7 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
           <p><strong>Cliente:</strong> {store.cliente}</p>
           <p><strong>Marca:</strong> {store.marca}</p>
           <p><strong>Filial:</strong> {store.filial}</p>
-          <p><strong>CNPJ:</strong> {store.cnpj}</p>
+          <p><strong>CNPJ:</strong> {formatCnpj(store.cnpj)}</p>
         </div>
 
         <label className="block mb-2 font-medium">Status</label>

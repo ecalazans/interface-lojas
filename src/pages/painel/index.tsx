@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "../../services/api";
 
 import { EyeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { EditStatusModal } from "../../components/EditStatusModal";
@@ -25,7 +25,7 @@ interface StoreProps {
 
 export function Painel() {
   const [lojas, setLojas] = useState<StoreProps[]>([]);
-  console.log(lojas)
+  // console.log(lojas)
   const [search, setSearch] = useState("");
 
   const [selectedStore, setSelectedStore] = useState<StoreProps | null>(null);
@@ -40,7 +40,7 @@ export function Painel() {
   const fetchLojas = async () => {
     try {
       setLoading(true)
-      const response = await axios.get("https://api-lojas-2025.onrender.com/lojas/all");
+      const response = await api.get("lojas/all");
       setLojas(response.data);
     } catch (error) {
       console.error("Erro ao buscar lojas:", error);
@@ -58,7 +58,7 @@ export function Painel() {
 
   const refreshLojas = async () => {
     try {
-      const response = await axios.get("https://api-lojas-2025.onrender.com/lojas/all");
+      const response = await api.get("lojas/all");
       setLojas(response.data);
     } catch (err) {
       console.error("Erro ao atualizar lista:", err);

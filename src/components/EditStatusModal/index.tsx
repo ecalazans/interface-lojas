@@ -121,39 +121,39 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
         </div>
 
 
-        <div className={`space-y-3 mb-4 transition-all duration-300 overflow-hidden ${status === "Inativo" ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          }`}>
-          <div>
-            <label className="block text-sm font-medium">
-              Número do chamado
-            </label>
-            <input
-              type="text"
-              value={numeroChamado}
-              onChange={(e) => setNumeroChamado(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 border-gray-300"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium">Responsável</label>
-            <input
-              type="text"
-              value={responsavel}
-              onChange={(e) => setResponsavel(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 border-gray-300"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium">Motivo</label>
-            <textarea
-              value={motivo}
-              onChange={(e) => setMotivo(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 h-36 border-gray-300"
-            />
-          </div>
+        {/* <div className={`space-y-3 mb-4 transition-all duration-300 overflow-hidden ${status === "Inativo" ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}> */}
+        <div>
+          <label className="block text-sm font-medium">
+            Número do chamado
+          </label>
+          <input
+            type="text"
+            value={numeroChamado}
+            onChange={(e) => setNumeroChamado(e.target.value)}
+            className="w-full border rounded-md px-3 py-2 border-gray-300"
+          />
         </div>
+
+        <div>
+          <label className="block text-sm font-medium">Responsável</label>
+          <input
+            type="text"
+            value={responsavel}
+            onChange={(e) => setResponsavel(e.target.value)}
+            className="w-full border rounded-md px-3 py-2 border-gray-300"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Motivo</label>
+          <textarea
+            value={motivo}
+            onChange={(e) => setMotivo(e.target.value)}
+            className="w-full border rounded-md px-3 py-2 h-36 border-gray-300"
+          />
+        </div>
+        {/* </div> */}
 
         <div className="flex justify-end gap-2">
           <button

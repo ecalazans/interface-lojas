@@ -5,7 +5,7 @@ export function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const { signIn } = UseAuth()
+  const { signIn, loading } = UseAuth()
 
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,10 +48,24 @@ export function SignIn() {
           </div>
           <button
             type="submit"
+            disabled={loading}
+            className="w-full bg-[#D000FF] text-white hover:bg-[#9f00c2] transition cursor-pointer px-4 py-2 rounded-md disabled:opacity-50 flex justify-center items-center"
+          >
+            {loading ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Entrando...
+              </div>
+            ) : (
+              "Entrar"
+            )}
+          </button>
+          {/* <button
+            type="submit"
             className="w-full bg-[#D000FF] text-white font-medium py-2 rounded-lg shadow hover:bg-[#9f00c2] transition cursor-pointer"
           >
             Entrar
-          </button>
+          </button> */}
         </form>
       </div>
     </div>

@@ -25,6 +25,7 @@ interface AuthContextData {
   user: User | null;
   signIn: (credentials: SignInCredentials) => Promise<void>;
   signOut: () => void;
+  loading: boolean;
 }
 
 interface AuthProviderProps {
@@ -34,6 +35,8 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 function AuthProvider({ children }: AuthProviderProps) {
+  const [loading, setLoading] = useState(false)
+
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem("@store-app:token");
     const user = localStorage.getItem("@store-app:user");
@@ -48,6 +51,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   async function signIn({ email, password }: SignInCredentials) {
     try {
+      setLoading(true)
       const response = await api.post("/sessions", { email, password });
       const { user, token } = response.data;
 
@@ -63,6 +67,8 @@ function AuthProvider({ children }: AuthProviderProps) {
       } else {
         alert("Não foi possível entrar."); // erro por outro motivo que não msg do backend
       }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -91,6 +97,7 @@ function AuthProvider({ children }: AuthProviderProps) {
       signIn,
       user: data.user,
       signOut,
+      loading: loading
     }}>
       {children}
     </AuthContext.Provider>

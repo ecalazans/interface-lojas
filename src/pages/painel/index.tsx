@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
+import { UseAuth } from "../../hooks/auth";
 
-import { EyeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon, PlusIcon } from "@heroicons/react/24/solid";
+import { EyeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon, PlusIcon, PowerIcon } from "@heroicons/react/24/solid";
 import { EditStatusModal } from "../../components/EditStatusModal";
 import { ModalCreateStore } from "../../components/CreateStoreModal";
 import { ViewStoreModal } from "../../components/ViewStoreModal";
@@ -35,6 +36,8 @@ export function Painel() {
 
   const [loading, setLoading] = useState(true)
   const [errorApi, setErrorApi] = useState<string | null>(null)
+
+  const { signOut } = UseAuth()
 
   // Carregar lojas da API
   const fetchLojas = async () => {
@@ -87,30 +90,22 @@ export function Painel() {
     (loja) => loja.status === "Inativo"
   )
 
-  if (errorApi) {
-    return (
-      <div className="flex justify-center items-center h-[70vh]">
-        <div className="bg-red-100 text-red-700 p-4 rounded-lg shadow-md max-w-md text-center">
-          <p className="font-semibold mb-2">Erro de conexão com os dados</p>
-          <p>{errorApi}</p>
-          <button
-            onClick={fetchLojas}
-            className="mt-4 px-4 py-2 bg-[#D000FF] text-white rounded-lg hover:bg-[#9f00c2] transition"
-          >
-            🔄 Tentar novamente
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="p-6 max-w-6xl mx-auto bg-">
       {/* Renderiza só se não estiver carregando os dados da API */}
       {!loading && !errorApi && (
         <h1 className="text-2xl font-bold mb-10">
-          <div className="flex items-center gap-3">
-            <img src="/sintese.svg" alt="" className="w-6 h-6 rounded-sm" /> Controle de Lojas
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <img src="/sintese.svg" alt="" className="w-6 h-6 rounded-sm" /> Controle de Lojas
+            </div>
+            <button
+              title="Sair"
+              className="cursor-pointer"
+              onClick={signOut}
+            >
+              <PowerIcon className="w-7 h-7" />
+            </button>
           </div>
         </h1>
       )}
@@ -140,7 +135,7 @@ export function Painel() {
       )}
 
       {/* Barra de busca */}
-      {/* Renderiza só se não estiver carregando os dados da API */}
+      {/* Renderiza se não estiver carregando os dados da API */}
       {!loading && !errorApi && (
         <div className="flex items-center justify-between gap-2 mb-4">
           <input
@@ -178,7 +173,7 @@ export function Painel() {
         </div>
       )}
 
-      {/* Renderiza só se não estiver carregando os dados da API */}
+      {/* Renderiza se não estiver carregando os dados da API */}
       {!loading && !errorApi && (
         <div className="max-h-[75vh] overflow-y-auto border rounded-lg shadow-md">
           <table className="w-full border-collapse">

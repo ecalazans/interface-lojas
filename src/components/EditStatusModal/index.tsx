@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import { api } from "../../services/api";
 import { formatCnpj } from "../../utils/formatCnpj";
 
 interface StoreProps {
@@ -11,9 +11,14 @@ interface StoreProps {
   data_encerramento: string,
   status: string,
   observacoes: string
-  chamado?: string,
-  responsavel?: string,
-  motivo?: string,
+  chamado_inativo?: string,
+  responsavel_inativo?: string,
+  motivo_inativo?: string,
+  date_update_inativo?: string,
+  chamado_ativo?: string,
+  responsavel_ativo?: string,
+  motivo_ativo?: string,
+  date_update_ativo?: string,
 }
 
 interface EditStatusModalProps {
@@ -26,55 +31,88 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
   const [status, setStatus] = useState(store?.status || "");
   const [loading, setLoading] = useState(false);
 
-  const [numeroChamado, setNumeroChamado] = useState(store?.chamado || "");
-  const [motivo, setMotivo] = useState(store?.motivo || "");
-  const [responsavel, setResponsavel] = useState(store?.responsavel || "");
+  // campos inativo
+  const [numeroChamadoInativo, setNumeroChamadoInativo] = useState(store?.chamado_inativo || "");
+  const [motivoInativo, setMotivoInativo] = useState(store?.motivo_inativo || "");
+  const [responsavelInativo, setResponsavelInativo] = useState(store?.responsavel_inativo || "");
+
+  // campos ativo
+  const [numeroChamadoAtivo, setNumeroChamadoAtivo] = useState(store?.chamado_ativo || "");
+  const [motivoAtivo, setMotivoAtivo] = useState(store?.motivo_ativo || "");
+  const [responsavelAtivo, setResponsavelAtivo] = useState(store?.responsavel_ativo || "");
+
 
   const handleSave = async () => {
     const statusAtual = store?.status
     const novoStatus = status
+    console.log(statusAtual)
+    console.log(novoStatus)
 
-    const chamadoAtual = store?.chamado
-    const novoChamado = numeroChamado
-
-    const motivoAtual = store?.motivo
-    const novoMotivo = motivo
-
-    const responsavelAtual = store?.responsavel
-    const novoResponsavel = responsavel
-
-    if (statusAtual === novoStatus && novoStatus === "Ativo") {
-      alert("Nenhuma alteração detectada");
-      return
+    let mudodouAlgo = false
+    let payload: any = {
+      id: store.cnpj,
+      novoStatus
     }
 
-    if (novoStatus === "Inativo") {
-      const mudouAlgo =
-        statusAtual !== novoStatus ||
-        chamadoAtual !== novoChamado ||
-        motivoAtual !== novoMotivo ||
-        responsavelAtual !== novoResponsavel;
+    // If para o primeiro caso, que era somente Inativo
+    // if (statusAtual === novoStatus) {
+    //   alert("Nenhuma alteração detectada");
+    //   return
+    // }
 
-      if (!mudouAlgo) {
+    if (novoStatus === "Inativo") {
+      mudodouAlgo =
+        statusAtual !== novoStatus ||
+        numeroChamadoInativo !== store.chamado_inativo ||
+        motivoInativo !== store.motivo_inativo ||
+        responsavelInativo !== store.responsavel_inativo;
+
+      if (!mudodouAlgo) {
         alert("Nenhuma alteração detectada nos campos")
         return
       }
+
+      if (!numeroChamadoInativo || !motivoInativo || !responsavelInativo) {
+        alert("Preencha número do chamado, responsável e motivo antes de salvar.");
+        return
+      }
+
+      payload = {
+        ...payload,
+        chamado: numeroChamadoInativo,
+        responsavel: responsavelInativo,
+        motivo: motivoInativo
+      }
     }
 
-    if (!numeroChamado || !motivo || !responsavel) {
-      alert("Preencha número do chamado, responsável e motivo antes de salvar.");
-      return
+    if (novoStatus === "Ativo") {
+      mudodouAlgo =
+        statusAtual !== novoStatus ||
+        numeroChamadoAtivo !== store.chamado_ativo ||
+        motivoAtivo !== store.motivo_ativo ||
+        responsavelAtivo !== store.responsavel_ativo;
+
+      if (!mudodouAlgo) {
+        alert("Nenhuma alteração detectada nos campos")
+        return
+      }
+
+      if (!numeroChamadoAtivo || !motivoAtivo || !responsavelAtivo) {
+        alert("Preencha número do chamado, responsável e motivo antes de salvar.");
+        return
+      }
+
+      payload = {
+        ...payload,
+        chamado: numeroChamadoAtivo,
+        responsavel: responsavelAtivo,
+        motivo: motivoAtivo
+      }
     }
 
     setLoading(true)
     try {
-      await axios.put(`https://api-lojas-2025.onrender.com/lojas/`, {
-        id: store.cnpj,
-        novoStatus: status,
-        chamado: numeroChamado,
-        responsavel,
-        motivo
-      });
+      await api.put("/lojas", payload);
       onUpdated();
       onClose();
     } catch (error) {
@@ -129,8 +167,14 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
           </label>
           <input
             type="text"
-            value={numeroChamado}
-            onChange={(e) => setNumeroChamado(e.target.value)}
+            value={status === "Inativo" ? numeroChamadoInativo : numeroChamadoAtivo}
+            onChange={(e) => {
+              if (status === "Inativo") {
+                setNumeroChamadoInativo(e.target.value)
+              } else {
+                setNumeroChamadoAtivo(e.target.value)
+              }
+            }}
             className="w-full border rounded-md px-3 py-2 border-gray-300"
           />
         </div>
@@ -139,8 +183,14 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
           <label className="block text-sm font-medium">Responsável</label>
           <input
             type="text"
-            value={responsavel}
-            onChange={(e) => setResponsavel(e.target.value)}
+            value={status === "Inativo" ? responsavelInativo : responsavelAtivo}
+            onChange={(e) => {
+              if (status === "Inativo") {
+                setResponsavelInativo(e.target.value)
+              } else {
+                setResponsavelAtivo(e.target.value)
+              }
+            }}
             className="w-full border rounded-md px-3 py-2 border-gray-300"
           />
         </div>
@@ -148,8 +198,14 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
         <div>
           <label className="block text-sm font-medium">Motivo</label>
           <textarea
-            value={motivo}
-            onChange={(e) => setMotivo(e.target.value)}
+            value={status === "Inativo" ? motivoInativo : motivoAtivo}
+            onChange={(e) => {
+              if (status === "Inativo") {
+                setMotivoInativo(e.target.value)
+              } else {
+                setMotivoAtivo(e.target.value)
+              }
+            }}
             className="w-full border rounded-md px-3 py-2 h-36 border-gray-300"
           />
         </div>

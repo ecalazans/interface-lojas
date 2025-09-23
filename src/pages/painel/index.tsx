@@ -26,7 +26,6 @@ interface StoreProps {
 
 export function Painel() {
   const [lojas, setLojas] = useState<StoreProps[]>([]);
-  // console.log(lojas)
   const [search, setSearch] = useState("");
 
   const [selectedStore, setSelectedStore] = useState<StoreProps | null>(null);

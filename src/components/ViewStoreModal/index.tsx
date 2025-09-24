@@ -8,11 +8,15 @@ interface StoreProps {
   data_inauguracao: string,
   data_encerramento: string,
   status: string,
-  observacoes: string,
-  chamado: string,
-  responsavel: string,
-  motivo: string,
-  date_update: string,
+  observacoes: string
+  chamado_inativo?: string,
+  responsavel_inativo?: string,
+  motivo_inativo?: string,
+  date_update_inativo?: string,
+  chamado_ativo?: string,
+  responsavel_ativo?: string,
+  motivo_ativo?: string,
+  date_update_ativo?: string,
 }
 
 interface ViewStoreModalProps {
@@ -33,7 +37,15 @@ export function ViewStoreModal({ store, onClose }: ViewStoreModalProps) {
           </div>
           <div>
             <span className="block text-gray-500 font-medium">Última atualização</span>
-            <span className="text-gray-800">{store.date_update || "Nunca atualizado"}</span>
+            <span className="text-gray-800">
+              {
+                store.status === "Inativo" && store.date_update_inativo !== "" ?
+                  store.date_update_inativo :
+                  store.status === "Ativo" && store.date_update_ativo !== "" ?
+                    store.date_update_ativo :
+                    "-------"
+              }
+            </span>
           </div>
           <div>
             <span className="block text-gray-500 font-medium">Filial</span>
@@ -56,22 +68,46 @@ export function ViewStoreModal({ store, onClose }: ViewStoreModalProps) {
           </div>
 
           {/* Só aparece se estiver inativa */}
-          {store.status === "Inativo" && (
-            <div className="col-span-2 grid grid-cols-2 gap-4 text-sm pt-4">
-              <div>
-                <span className="block text-gray-500 font-medium">Chamado</span>
-                <span className="text-gray-800">{store.chamado}</span>
-              </div>
-              <div>
-                <span className="block text-gray-500 font-medium">Responsável</span>
-                <span className="text-gray-800">{store.responsavel}</span>
-              </div>
-              <div className="col-span-2">
-                <span className="block text-gray-500 font-medium">Motivo</span>
-                <span className="text-gray-800">{store.motivo}</span>
-              </div>
+          {/* {store.status === "Inativo" && ( */}
+          <div className="col-span-2 grid grid-cols-2 gap-4 text-sm pt-4">
+            <div>
+              <span className="block text-gray-500 font-medium">Chamado</span>
+              <span className="text-gray-800">
+                {
+                  store.status === "Inativo" && store.chamado_inativo !== "" ?
+                    store.chamado_inativo :
+                    store.status === "Ativo" && store.chamado_ativo !== "" ?
+                      store.chamado_ativo :
+                      "-------"
+                }
+              </span>
             </div>
-          )}
+            <div>
+              <span className="block text-gray-500 font-medium">Responsável</span>
+              <span className="text-gray-800">
+                {
+                  store.status === "Inativo" && store.responsavel_inativo !== "" ?
+                    store.responsavel_inativo :
+                    store.status === "Ativo" && store.responsavel_ativo !== "" ?
+                      store.responsavel_ativo :
+                      "-------"
+                }
+              </span>
+            </div>
+            <div className="col-span-2">
+              <span className="block text-gray-500 font-medium">Motivo</span>
+              <span className="text-gray-800">
+                {
+                  store.status === "Inativo" && store.motivo_inativo !== "" ?
+                    store.motivo_inativo :
+                    store.status === "Ativo" && store.motivo_ativo !== "" ?
+                      store.motivo_ativo :
+                      "-------"
+                }
+              </span>
+            </div>
+          </div>
+          {/* )} */}
 
 
         </div>

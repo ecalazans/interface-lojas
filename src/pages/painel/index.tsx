@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { UseAuth } from "../../hooks/auth";
 
-import { EyeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon, PlusIcon, PowerIcon } from "@heroicons/react/24/solid";
+import { EyeIcon, PencilSquareIcon, TrashIcon, ArrowDownTrayIcon, PlusIcon, PowerIcon } from "@heroicons/react/24/solid";
+import * as XLSX from "xlsx";
+
 import { EditStatusModal } from "../../components/EditStatusModal";
 import { ModalCreateStore } from "../../components/CreateStoreModal";
 import { ViewStoreModal } from "../../components/ViewStoreModal";
@@ -21,6 +23,7 @@ interface StoreProps {
   chamado: string,
   responsavel: string,
   motivo: string,
+  tipo: string,
   date_update: string,
 }
 
@@ -52,11 +55,11 @@ export function Painel() {
     }
   };
 
-  const reloadStore = () => {
-    alert('Buscando dados da API...')
-    fetchLojas()
-    setSearch("")
-  }
+  // const reloadStore = () => {
+  //   alert('Buscando dados da API...')
+  //   fetchLojas()
+  //   setSearch("")
+  // }
 
   const refreshLojas = async () => {
     try {
@@ -89,6 +92,24 @@ export function Painel() {
     (loja) => loja.status === "Inativo"
   )
 
+  const exportToExcel = () => {
+    const lojasDownload = lojasFiltradas.map(loja => ({
+      CLIENTE: loja.cliente,
+      MARCA: loja.marca,
+      FILIAL: loja.filial,
+      CNPJ: loja.cnpj,
+      TIPO: loja.tipo,
+      STATUS: loja.status,
+    })
+    )
+
+    const worksheets = XLSX.utils.json_to_sheet(lojasDownload)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheets, "Lojas")
+
+    XLSX.writeFile(workbook, "lojas-filtradas.xlsx")
+  }
+
   return (
     <div className="p-6 max-w-6xl mx-auto bg-">
       {/* Renderiza só se não estiver carregando os dados da API */}
@@ -100,10 +121,10 @@ export function Painel() {
             </div>
             <button
               title="Sair"
-              className="cursor-pointer"
+              className="cursor-pointer p-2 rounded-lg bg-purple-50 hover:bg-purple-100 group"
               onClick={signOut}
             >
-              <PowerIcon className="w-7 h-7" />
+              <PowerIcon className="w-7 h-7 group-hover:text-[#D000FF]" />
             </button>
           </div>
         </h1>
@@ -155,9 +176,17 @@ export function Painel() {
             </span>
           </div>
           <div className="flex justify-center gap-6">
-            <button className="cursor-pointer px-3 py-1 rounded-full border border-gray-400 text-gray-600 text-sm font-medium transition bg-white hover:bg-purple-100" onClick={reloadStore}>
+            {/* <button className="cursor-pointer px-3 py-1 rounded-full border border-gray-400 text-gray-600 text-sm font-medium transition bg-white hover:bg-purple-100" onClick={reloadStore}>
               <div className="flex items-center gap-1">
                 <ArrowPathIcon className="w-5 h-5 text-gray-600" /> Atualizar
+              </div>
+            </button> */}
+            <button
+              onClick={() => exportToExcel()}
+              className="cursor-pointer px-3 py-1 rounded-full border border-gray-400 text-gray-600 text-sm font-medium transition bg-white hover:bg-purple-100"
+            >
+              <div className="flex items-center gap-1">
+                <ArrowDownTrayIcon className="w-5 h-5" /> Baixar relatório
               </div>
             </button>
             <button
@@ -174,8 +203,8 @@ export function Painel() {
 
       {/* Renderiza se não estiver carregando os dados da API */}
       {!loading && !errorApi && (
-        <div className="max-h-[75vh] overflow-y-auto border rounded-lg shadow-md">
-          <table className="w-full border-collapse">
+        <div className="max-h-[73vh] overflow-y-auto border rounded-lg shadow-md">
+          <table className="w-full scroll-smooth border-collapse">
             <thead className="bg-purple-100 sticky top-0">
               <tr>
                 <th className="p-3 text-left">Cliente</th>
@@ -195,7 +224,7 @@ export function Painel() {
                     <td className="p-3">{loja.marca}</td>
                     <td className="p-3">{loja.filial}</td>
                     <td className="p-3">{formatCnpj(loja.cnpj)}</td>
-                    <td className="p-3">{"Franquia / Própria"}</td>
+                    <td className="p-3">{loja.tipo !== "" ? loja.tipo : "------"}</td>
                     <td className="p-3">
                       <span
                         className={`px-3 py-1 rounded-full text-white text-sm font-medium ${loja.status === "Ativo"

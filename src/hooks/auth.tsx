@@ -1,5 +1,6 @@
 import { api } from "../services/api"
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { toast } from "react-toastify";
 
 interface User {
   id: string;
@@ -52,7 +53,11 @@ function AuthProvider({ children }: AuthProviderProps) {
   async function signIn({ email, password }: SignInCredentials) {
     try {
       setLoading(true)
-      const response = await api.post("/sessions", { email, password });
+      // const response = await api.post("/sessions", { email, password });
+
+      // Criar uma instância do axios sem interceptors
+      const loginApi = api.create(); // cria uma nova instância
+      const response = await loginApi.post("/sessions", { email, password });
       const { user, token } = response.data;
 
       localStorage.setItem("@store-app:user", JSON.stringify(user));
@@ -61,11 +66,18 @@ function AuthProvider({ children }: AuthProviderProps) {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setData({ user, token });
 
+      toast.success("Login realizado com sucesso 🎉", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+
     } catch (error: any) {
       if (error.response) {
-        alert(error.response.data.message); // mensagem personalizada do backend
+        // mensagem personalizada do backend
+        toast.error(error.response.data.message);
       } else {
-        alert("Não foi possível entrar."); // erro por outro motivo que não msg do backend
+        // erro por outro motivo que não msg do backend
+        toast.error("Não foi possível entrar.");
       }
     } finally {
       setLoading(false)
@@ -73,10 +85,19 @@ function AuthProvider({ children }: AuthProviderProps) {
   }
 
   function signOut() {
-    localStorage.removeItem("@store-app:token");
-    localStorage.removeItem("@store-app:user");
+    // mostra notificação
+    toast.success("Sessão encerrada. Até logo! 👋", {
+      position: "top-right",
+      autoClose: 3000,
+    });
 
-    setData({} as AuthState);
+    setTimeout(() => {
+      localStorage.removeItem("@store-app:token");
+      localStorage.removeItem("@store-app:user");
+
+      setData({} as AuthState);; // ou o que você usa para limpar o estado
+    }, 1000);
+
   }
 
   useEffect(() => {
@@ -88,6 +109,22 @@ function AuthProvider({ children }: AuthProviderProps) {
 
       setData({ token, user: JSON.parse(user) });
     }
+
+    // cria o interceptor
+    const interceptor = api.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          signOut(); // força logout se o token estiver inválido/expirado
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    // cleanup → remove o interceptor ao desmontar
+    return () => {
+      api.interceptors.response.eject(interceptor);
+    };
 
   }, []);
 

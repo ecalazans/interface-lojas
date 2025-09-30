@@ -1,6 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
-import { formatCnpj } from "../../utils/formatCnpj";
+import { api } from "../../services/api";
+import { cnpj } from "cpf-cnpj-validator";
 
 interface ModalCreateStoreProps {
   isOpen: boolean;
@@ -9,7 +9,8 @@ interface ModalCreateStoreProps {
 }
 
 export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateStoreProps) {
-  const [cnpj, setCnpj] = useState("");
+  const [cnpjInput, setCnpj] = useState("");
+  const [error, setError] = useState("");
   const [filial, setFilial] = useState("");
   const [cliente, setCliente] = useState("");
   const [marca, setMarca] = useState("");
@@ -18,15 +19,20 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
   if (!isOpen) return null;
 
   const handleCreate = async () => {
-    if (!cnpj || !filial || !cliente! || marca) {
+    if (!cnpjInput || !filial || !cliente || !marca) {
       return alert("É obrigatório o preenchimento de todos os campos")
+    } else if (!cnpj.isValid(cnpjInput)) {
+      return alert("O CNPJ não é válido, verifique e tente novamente.")
     }
+
+    // Remove tudo que não for número
+    const cnpjFormated = cnpjInput.replace(/\D/g, "");
 
     try {
       setLoading(true);
 
-      await axios.post("https://api-lojas-2025.onrender.com/lojas/", {
-        cnpj,
+      await api.post("/lojas", {
+        cnpj: cnpjFormated,
         filial,
         cliente,
         marca,
@@ -35,8 +41,8 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
 
       onSuccess(); // recarrega a lista de lojas
       onClose(); // fecha modal
-    } catch (err) {
-      console.error("Erro ao criar loja:", err);
+    } catch (error: any) {
+      alert(error.response?.data?.message || "Erro ao criar usuário");
     } finally {
       setLoading(false);
     }
@@ -44,7 +50,16 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
 
   // remove caracteres não numéricos
   const handleChangeCnpj = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCnpj(e.target.value.replace(/\D/g, ""));
+    const raw = (e.target.value.replace(/\D/g, ""));
+
+    const formatted = cnpj.format(raw)
+    setCnpj(formatted)
+
+    if (raw.length === 14 && !cnpj.isValid(raw)) {
+      setError("CNPJ inválido")
+    } else {
+      setError("")
+    }
   };
 
   return (
@@ -52,15 +67,17 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
       <div className="bg-white rounded-xl shadow-lg p-6 w-96">
         <h2 className="text-xl font-bold mb-4">Cadastrar Nova Loja</h2>
 
-        <input
-          type="text"
-          value={formatCnpj(cnpj)}
-          onChange={handleChangeCnpj}
-          className="w-full border p-2 rounded mb-2 border-gray-300"
-          maxLength={18}
-          placeholder="CNPJ"
-        />
-
+        <div>
+          <input
+            type="text"
+            value={cnpjInput}
+            onChange={handleChangeCnpj}
+            className="w-full border p-2 rounded mb-2 border-gray-300"
+            maxLength={18}
+            placeholder="CNPJ"
+          />
+          {error && <span className="text-red-500 text-sm -mt-1 block">{error}</span>}
+        </div>
 
 
         <input

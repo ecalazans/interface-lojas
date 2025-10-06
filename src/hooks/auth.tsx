@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 interface User {
   id: string;
-  name: string;
+  nome: string;
   email: string;
   perfil: string;
   ativo: boolean;
@@ -96,7 +96,7 @@ function AuthProvider({ children }: AuthProviderProps) {
       localStorage.removeItem("@store-app:user");
 
       setData({} as AuthState);; // ou o que você usa para limpar o estado
-    }, 1000);
+    }, 200);
 
   }
 

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { UseAuth } from "../../hooks/auth";
+import { Link } from "react-router-dom";
 
-import { EyeIcon, PencilSquareIcon, TrashIcon, ArrowDownTrayIcon, PlusIcon, PowerIcon } from "@heroicons/react/24/solid";
+import { EyeIcon, PencilSquareIcon, TrashIcon, ArrowDownTrayIcon, PlusIcon, PowerIcon, UsersIcon } from "@heroicons/react/24/solid";
 import * as XLSX from "xlsx";
 
 import { EditStatusModal } from "../../components/EditStatusModal";
@@ -39,7 +40,7 @@ export function Painel() {
   const [loading, setLoading] = useState(true)
   const [errorApi, setErrorApi] = useState<string | null>(null)
 
-  const { signOut } = UseAuth()
+  const { signOut, user } = UseAuth()
 
   // Carregar lojas da API
   const fetchLojas = async () => {
@@ -107,27 +108,50 @@ export function Painel() {
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheets, "Lojas")
 
-    XLSX.writeFile(workbook, "lojas-filtradas.xlsx")
+    XLSX.writeFile(workbook, "lojas-sintese.xlsx")
   }
 
   return (
     <div className="p-6 max-w-6xl mx-auto bg-">
       {/* Renderiza só se não estiver carregando os dados da API */}
       {!loading && !errorApi && (
-        <h1 className="text-2xl font-bold mb-10">
+        <div className="text-2xl mb-10">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <img src="/sintese.svg" alt="" className="w-6 h-6 rounded-sm" /> Controle de Lojas
             </div>
-            <button
-              title="Sair"
-              className="cursor-pointer p-2 rounded-lg bg-purple-50 hover:bg-purple-100 group"
-              onClick={signOut}
-            >
-              <PowerIcon className="w-7 h-7 group-hover:text-[#D000FF]" />
-            </button>
+            <div className="flex gap-5">
+              <div className={`flex ${user?.perfil === "admin" ? "gap-20" : ""}`}>
+                {user?.perfil === "admin" &&
+                  <div className="flex flex-col justify-between items-center text-sm text-gray-600">
+                    <Link
+                      to={"/admin"}
+                      title="Gerenciar usuários"
+                      className="cursor-pointer p-2 rounded-lg bg-purple-50 hover:bg-purple-100 group"
+                    >
+                      <UsersIcon className="w-7 h-7" />
+                    </Link>
+                  </div>
+                }
+                <div className="flex flex-col justify-between items-center text-sm text-gray-600">
+                  {user &&
+                    <>
+                      <span>Bem-vindo,</span>
+                      <strong>{user.nome}</strong>
+                    </>
+                  }
+                </div>
+              </div>
+              <button
+                title="Sair"
+                className="cursor-pointer p-2 rounded-lg bg-purple-50 hover:bg-purple-100 group"
+                onClick={signOut}
+              >
+                <PowerIcon className="w-7 h-7 group-hover:text-[#D000FF]" />
+              </button>
+            </div>
           </div>
-        </h1>
+        </div>
       )}
 
       {/* Loading Spinner */}
@@ -203,10 +227,10 @@ export function Painel() {
 
       {/* Renderiza se não estiver carregando os dados da API */}
       {!loading && !errorApi && (
-        <div className="max-h-[73vh] overflow-y-auto border rounded-lg shadow-md">
+        <div className="max-h-[73vh] overflow-y-auto border border-gray-400 rounded-lg shadow-md">
           <table className="w-full scroll-smooth border-collapse">
             <thead className="bg-purple-100 sticky top-0">
-              <tr>
+              <tr className="border-b border-gray-400">
                 <th className="p-3 text-left">Cliente</th>
                 <th className="p-3 text-left">Marca</th>
                 <th className="p-3 text-left">Filial</th>
@@ -219,7 +243,7 @@ export function Painel() {
             <tbody>
               {lojasFiltradas.length > 0 ? (
                 lojasFiltradas.map((loja, index) => (
-                  <tr key={index} className="border-t odd:bg-white even:bg-gray-50">
+                  <tr key={index} className="border-t odd:bg-white even:bg-gray-50 border-b border-gray-400">
                     <td className="p-3">{loja.cliente}</td>
                     <td className="p-3">{loja.marca}</td>
                     <td className="p-3">{loja.filial}</td>

@@ -10,6 +10,7 @@ interface StoreProps {
   data_inauguracao: string,
   data_encerramento: string,
   status: string,
+  tipo: string,
   observacoes: string
   chamado_inativo?: string,
   responsavel_inativo?: string,
@@ -40,13 +41,14 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
   const [numeroChamadoAtivo, setNumeroChamadoAtivo] = useState(store?.chamado_ativo || "");
   const [motivoAtivo, setMotivoAtivo] = useState(store?.motivo_ativo || "");
   const [responsavelAtivo, setResponsavelAtivo] = useState(store?.responsavel_ativo || "");
+  const [tipo, setTipo] = useState(store?.tipo || "")
 
 
   const handleSave = async () => {
     const statusAtual = store?.status
     const novoStatus = status
-    console.log(statusAtual)
-    console.log(novoStatus)
+    // console.log(statusAtual)
+    // console.log(novoStatus)
 
     let mudodouAlgo = false
     let payload: any = {
@@ -134,29 +136,65 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
           <p><strong>CNPJ:</strong> {formatCnpj(store.cnpj)}</p>
         </div>
 
-        <label className="block mb-2 font-medium">Status</label>
-        <div className="flex gap-2 mb-3">
-          <button
-            type="button"
-            onClick={() => setStatus("Ativo")}
-            className={`cursor-pointer px-4 py-2 rounded-md border transition ${status === "Ativo"
-              ? "bg-green-500 text-white border-green-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-              }`}
-          >
-            Ativo
-          </button>
-          <button
-            type="button"
-            onClick={() => setStatus("Inativo")}
-            className={`cursor-pointer px-4 py-2 rounded-md border transition ${status === "Inativo"
-              ? "bg-red-500 text-white border-red-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-              }`}
-          >
-            Inativo
-          </button>
+        <div className="flex justify-between gap-8 mb-4">
+          {/* Grupo Status */}
+          <div className="flex flex-col justify-between">
+            <label className="block mb-2 font-medium">Status</label>
+            <div className="flex gap-2 items-center">
+              <button
+                type="button"
+                onClick={() => setStatus("Ativo")}
+                className={`cursor-pointer px-4 py-2 rounded-md border transition ${status === "Ativo"
+                  ? "bg-green-500 text-white border-green-600"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                  }`}
+              >
+                Ativo
+              </button>
+              <button
+                type="button"
+                onClick={() => setStatus("Inativo")}
+                className={`cursor-pointer px-4 py-2 rounded-md border transition ${status === "Inativo"
+                  ? "bg-red-500 text-white border-red-600"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                  }`}
+              >
+                Inativo
+              </button>
+            </div>
+          </div>
+
+          {/* Grupo Tipo de Loja */}
+          <div className="flex flex-col">
+            <label className="block font-medium mb-2">Tipo de Loja</label>
+            <div className="flex gap-4 items-center mt-auto mb-auto">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="tipo"
+                  value="Franquia"
+                  checked={tipo === "Franquia"}
+                  onChange={(e) => setTipo(e.target.value)}
+                  className="w-4 h-4 accent-[#D000FF] cursor-pointer"
+                />
+                <span className="text-gray-700">Franquia</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="tipo"
+                  value="Propria"
+                  checked={tipo === "Propria"}
+                  onChange={(e) => setTipo(e.target.value)}
+                  className="w-4 h-4 accent-[#D000FF] cursor-pointer"
+                />
+                <span className="text-gray-700">Própria</span>
+              </label>
+            </div>
+          </div>
         </div>
+
 
 
         {/* <div className={`space-y-3 mb-4 transition-all duration-300 overflow-hidden ${status === "Inativo" ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
@@ -180,7 +218,7 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Responsável</label>
+          <label className="block text-sm font-medium mt-3">Responsável</label>
           <input
             type="text"
             value={status === "Inativo" ? responsavelInativo : responsavelAtivo}
@@ -196,7 +234,7 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Motivo</label>
+          <label className="block text-sm font-medium mt-3">Motivo</label>
           <textarea
             value={status === "Inativo" ? motivoInativo : motivoAtivo}
             onChange={(e) => {

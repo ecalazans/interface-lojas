@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api } from "../../services/api";
 import { cnpj } from "cpf-cnpj-validator";
+import { formatCnpj } from "../../utils/formatCnpj";
 
 interface ModalCreateStoreProps {
   isOpen: boolean;
@@ -15,11 +16,13 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
   const [cliente, setCliente] = useState("");
   const [marca, setMarca] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tipo, setTipo] = useState("");
 
   if (!isOpen) return null;
 
   const handleCreate = async () => {
-    if (!cnpjInput || !filial || !cliente || !marca) {
+    console.log(tipo)
+    if (!cnpjInput || !filial || !cliente || !marca || !tipo) {
       return alert("É obrigatório o preenchimento de todos os campos")
     } else if (!cnpj.isValid(cnpjInput)) {
       return alert("O CNPJ não é válido, verifique e tente novamente.")
@@ -70,7 +73,7 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
         <div>
           <input
             type="text"
-            value={cnpjInput}
+            value={formatCnpj(cnpjInput)}
             onChange={handleChangeCnpj}
             className="w-full border p-2 rounded mb-2 border-gray-300"
             maxLength={18}
@@ -103,6 +106,35 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
           onChange={(e) => setCliente(e.target.value)}
           className="w-full border p-2 rounded mb-2 border-gray-300"
         />
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-2">Tipo de Loja</label>
+          <div className="flex gap-4 items-center">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="tipo"
+                value="Franquia"
+                checked={tipo === "Franquia"}
+                onChange={(e) => setTipo(e.target.value)}
+                className="w-4 h-4 accent-[#D000FF] cursor-pointer"
+              />
+              <span className="text-gray-700">Franquia</span>
+            </label>
+
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="tipo"
+                value="Própria"
+                checked={tipo === "Própria"}
+                onChange={(e) => setTipo(e.target.value)}
+                className="w-4 h-4 accent-[#D000FF] cursor-pointer"
+              />
+              <span className="text-gray-700">Própria</span>
+            </label>
+          </div>
+        </div>
 
         <div className="flex justify-end gap-2 mt-4">
           <button

@@ -31,6 +31,7 @@ interface EditStatusModalProps {
 export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalProps) {
   const [status, setStatus] = useState(store?.status || "");
   const [loading, setLoading] = useState(false);
+  const [tipo, setTipo] = useState(store?.tipo || "")
 
   // campos inativo
   const [numeroChamadoInativo, setNumeroChamadoInativo] = useState(store?.chamado_inativo || "");
@@ -41,7 +42,6 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
   const [numeroChamadoAtivo, setNumeroChamadoAtivo] = useState(store?.chamado_ativo || "");
   const [motivoAtivo, setMotivoAtivo] = useState(store?.motivo_ativo || "");
   const [responsavelAtivo, setResponsavelAtivo] = useState(store?.responsavel_ativo || "");
-  const [tipo, setTipo] = useState(store?.tipo || "")
 
 
   const handleSave = async () => {
@@ -67,23 +67,26 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
         statusAtual !== novoStatus ||
         numeroChamadoInativo !== store.chamado_inativo ||
         motivoInativo !== store.motivo_inativo ||
-        responsavelInativo !== store.responsavel_inativo;
+        responsavelInativo !== store.responsavel_inativo ||
+        tipo !== store.tipo
 
       if (!mudodouAlgo) {
         alert("Nenhuma alteração detectada nos campos")
         return
       }
 
-      if (!numeroChamadoInativo || !motivoInativo || !responsavelInativo) {
+      const statusMudou = statusAtual !== novoStatus
+      if (statusMudou && (!numeroChamadoInativo || !motivoInativo || !responsavelInativo)) {
         alert("Preencha número do chamado, responsável e motivo antes de salvar.");
         return
       }
 
       payload = {
         ...payload,
-        chamado: numeroChamadoInativo,
-        responsavel: responsavelInativo,
-        motivo: motivoInativo
+        chamado: numeroChamadoInativo || "",
+        responsavel: responsavelInativo || "",
+        motivo: motivoInativo || "",
+        tipo: tipo
       }
     }
 
@@ -92,24 +95,28 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
         statusAtual !== novoStatus ||
         numeroChamadoAtivo !== store.chamado_ativo ||
         motivoAtivo !== store.motivo_ativo ||
-        responsavelAtivo !== store.responsavel_ativo;
+        responsavelAtivo !== store.responsavel_ativo ||
+        tipo !== store.tipo
 
       if (!mudodouAlgo) {
         alert("Nenhuma alteração detectada nos campos")
         return
       }
 
-      if (!numeroChamadoAtivo || !motivoAtivo || !responsavelAtivo) {
+      const statusMudou = statusAtual !== novoStatus
+      if (statusMudou && (!numeroChamadoAtivo || !motivoAtivo || !responsavelAtivo)) {
         alert("Preencha número do chamado, responsável e motivo antes de salvar.");
         return
       }
 
       payload = {
         ...payload,
-        chamado: numeroChamadoAtivo,
-        responsavel: responsavelAtivo,
-        motivo: motivoAtivo
+        chamado: numeroChamadoAtivo || "",
+        responsavel: responsavelAtivo || "",
+        motivo: motivoAtivo || "",
+        tipo: tipo
       }
+
     }
 
     setLoading(true)
@@ -184,8 +191,8 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
                 <input
                   type="radio"
                   name="tipo"
-                  value="Propria"
-                  checked={tipo === "Propria"}
+                  value="Própria"
+                  checked={tipo === "Própria"}
                   onChange={(e) => setTipo(e.target.value)}
                   className="w-4 h-4 accent-[#D000FF] cursor-pointer"
                 />

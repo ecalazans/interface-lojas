@@ -16,13 +16,12 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
   const [cliente, setCliente] = useState("");
   const [marca, setMarca] = useState("");
   const [loading, setLoading] = useState(false);
-  const [tipo, setTipo] = useState("");
+  // const [tipo, setTipo] = useState("");
 
   if (!isOpen) return null;
 
   const handleCreate = async () => {
-    console.log(tipo)
-    if (!cnpjInput || !filial || !cliente || !marca || !tipo) {
+    if (!cnpjInput || !filial || !cliente || !marca) {
       return alert("É obrigatório o preenchimento de todos os campos")
     } else if (!cnpj.isValid(cnpjInput)) {
       return alert("O CNPJ não é válido, verifique e tente novamente.")
@@ -107,7 +106,7 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
           className="w-full border p-2 rounded mb-2 border-gray-300"
         />
 
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Tipo de Loja</label>
           <div className="flex gap-4 items-center">
             <label className="flex items-center gap-2 cursor-pointer">
@@ -134,7 +133,7 @@ export function ModalCreateStore({ isOpen, onClose, onSuccess, }: ModalCreateSto
               <span className="text-gray-700">Própria</span>
             </label>
           </div>
-        </div>
+        </div> */}
 
         <div className="flex justify-end gap-2 mt-4">
           <button

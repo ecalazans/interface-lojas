@@ -86,10 +86,10 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   function signOut() {
     // mostra notificação
-    toast.success("Sessão encerrada. Até logo! 👋", {
-      position: "top-right",
-      autoClose: 3000,
-    });
+    // toast.success("Sessão encerrada. Até logo! 👋", {
+    //   position: "top-right",
+    //   autoClose: 3000,
+    // });
 
     setTimeout(() => {
       localStorage.removeItem("@store-app:token");

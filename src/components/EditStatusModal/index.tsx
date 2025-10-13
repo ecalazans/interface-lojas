@@ -47,10 +47,7 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
   const handleSave = async () => {
     const statusAtual = store?.status
     const novoStatus = status
-    // console.log(statusAtual)
-    // console.log(novoStatus)
 
-    let mudodouAlgo = false
     let payload: any = {
       id: store.cnpj,
       novoStatus
@@ -63,61 +60,99 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
     // }
 
     if (novoStatus === "Inativo") {
-      mudodouAlgo =
-        statusAtual !== novoStatus ||
+      const statusMudou = statusAtual !== novoStatus
+
+      const mudouAlgoCampoObrigatorio =
         numeroChamadoInativo !== store.chamado_inativo ||
         motivoInativo !== store.motivo_inativo ||
-        responsavelInativo !== store.responsavel_inativo ||
-        tipo !== store.tipo
+        responsavelInativo !== store.responsavel_inativo;
 
-      if (!mudodouAlgo) {
+      const mudouTipo = tipo !== store.tipo
+
+      const mudouAlgo = statusMudou || mudouAlgoCampoObrigatorio || mudouTipo;
+
+      // 1.) Nenhuma alteração detectada
+      if (!mudouAlgo) {
         alert("Nenhuma alteração detectada nos campos")
         return
       }
 
-      const statusMudou = statusAtual !== novoStatus
-      if (statusMudou && (!numeroChamadoInativo || !motivoInativo || !responsavelInativo)) {
-        alert("Preencha número do chamado, responsável e motivo antes de salvar.");
-        return
+      // 2.) Se o status mudou, valida os campos obrigatórios
+      if (statusMudou) {
+        const camposPreenchidos =
+          Boolean(numeroChamadoInativo) &&
+          Boolean(motivoInativo) &&
+          Boolean(responsavelInativo);
+
+        if (!camposPreenchidos) {
+          alert("Preencha número do chamado, responsável e motivo antes de salvar.");
+          return;
+        }
+
+        // 3.) Se o status mudou, exige que altere campos obrigatórios
+        if (!mudouAlgoCampoObrigatorio) {
+          alert("Altere alguma informação antes de salvar (campos obrigatórios).");
+          return;
+        }
       }
 
+      // Pode salvar (alteração válida)
       payload = {
         ...payload,
-        chamado: numeroChamadoInativo || "",
-        responsavel: responsavelInativo || "",
-        motivo: motivoInativo || "",
-        tipo: tipo
-      }
+        ...(numeroChamadoAtivo !== store.chamado_ativo && { chamado: numeroChamadoAtivo }),
+        ...(motivoAtivo !== store.motivo_ativo && { motivo: motivoAtivo }),
+        ...(responsavelAtivo !== store.responsavel_ativo && { responsavel: responsavelAtivo }),
+        ...(tipo !== store.tipo && { tipo })
+      };
     }
 
     if (novoStatus === "Ativo") {
-      mudodouAlgo =
-        statusAtual !== novoStatus ||
+      const statusMudou = statusAtual !== novoStatus;
+
+      const mudouAlgoCampoObrigatorio =
         numeroChamadoAtivo !== store.chamado_ativo ||
         motivoAtivo !== store.motivo_ativo ||
-        responsavelAtivo !== store.responsavel_ativo ||
-        tipo !== store.tipo
+        responsavelAtivo !== store.responsavel_ativo
 
-      if (!mudodouAlgo) {
+      const mudouTipo = tipo !== store.tipo;
+
+      const mudouAlgo = statusMudou || mudouAlgoCampoObrigatorio || mudouTipo;
+
+      // 1.) Nenhuma alteração detectada
+      if (!mudouAlgo) {
         alert("Nenhuma alteração detectada nos campos")
         return
       }
 
-      const statusMudou = statusAtual !== novoStatus
-      if (statusMudou && (!numeroChamadoAtivo || !motivoAtivo || !responsavelAtivo)) {
-        alert("Preencha número do chamado, responsável e motivo antes de salvar.");
-        return
+      // 2.) Se o status mudou, valida os campos obrigatórios
+      if (statusMudou) {
+        const camposPreenchidos =
+          Boolean(numeroChamadoAtivo) &&
+          Boolean(motivoAtivo) &&
+          Boolean(responsavelAtivo);
+
+        if (!camposPreenchidos) {
+          alert("Preencha número do chamado, responsável e motivo antes de salvar.");
+          return;
+        }
+
+        // 3.) Se o status mudou, exige que altere campos obrigatórios
+        if (!mudouAlgoCampoObrigatorio) {
+          alert("Altere alguma informação antes de salvar (campos obrigatórios).");
+          return;
+        }
       }
 
+      // Pode salvar (alteração válida)
       payload = {
         ...payload,
-        chamado: numeroChamadoAtivo || "",
-        responsavel: responsavelAtivo || "",
-        motivo: motivoAtivo || "",
-        tipo: tipo
-      }
-
+        ...(numeroChamadoAtivo !== store.chamado_ativo && { chamado: numeroChamadoAtivo }),
+        ...(motivoAtivo !== store.motivo_ativo && { motivo: motivoAtivo }),
+        ...(responsavelAtivo !== store.responsavel_ativo && { responsavel: responsavelAtivo }),
+        ...(tipo !== store.tipo && { tipo })
+      };
     }
+
 
     setLoading(true)
     try {
@@ -207,8 +242,10 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
         {/* <div className={`space-y-3 mb-4 transition-all duration-300 overflow-hidden ${status === "Inativo" ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
           }`}> */}
         <div>
+          {/* <p className="text-sm text-gray-500 mt-2">Campos marcados com <span className="text-red-500">*</span> são obrigatórios.</p> */}
+
           <label className="block text-sm font-medium">
-            Número do chamado
+            Número do chamado <span className="text-red-500 text-sm">*</span>
           </label>
           <input
             type="text"
@@ -225,7 +262,8 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
         </div>
 
         <div>
-          <label className="block text-sm font-medium mt-3">Responsável</label>
+          <label className="block text-sm font-medium mt-3">
+            Responsável <span className="text-red-500 text-sm">*</span></label>
           <input
             type="text"
             value={status === "Inativo" ? responsavelInativo : responsavelAtivo}
@@ -241,7 +279,9 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
         </div>
 
         <div>
-          <label className="block text-sm font-medium mt-3">Motivo</label>
+          <label className="block text-sm font-medium mt-3">
+            Motivo <span className="text-red-500 text-sm">*</span>
+          </label>
           <textarea
             value={status === "Inativo" ? motivoInativo : motivoAtivo}
             onChange={(e) => {

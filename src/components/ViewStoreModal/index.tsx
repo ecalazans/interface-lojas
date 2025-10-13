@@ -8,6 +8,7 @@ interface StoreProps {
   data_inauguracao: string,
   data_encerramento: string,
   status: string,
+  tipo: string,
   observacoes: string
   chamado_inativo?: string,
   responsavel_inativo?: string,
@@ -65,6 +66,10 @@ export function ViewStoreModal({ store, onClose }: ViewStoreModalProps) {
             >
               {store.status}
             </span>
+          </div>
+          <div>
+            <span className="block text-gray-500 font-medium">Tipo</span>
+            <span className="text-gray-800">{store.tipo !== "" ? store.tipo : "------"}</span>
           </div>
 
           {/* Só aparece se estiver inativa */}

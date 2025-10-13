@@ -6,7 +6,7 @@ interface User {
   nome: string;
   email: string;
   perfil: string;
-  marca: string;
+  cliente: string;
   ativo: string;
 }
 
@@ -18,7 +18,7 @@ export function Admin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [perfil, setPerfil] = useState("user");
-  const [marca, setMarca] = useState("");
+  const [cliente, setCliente] = useState("");
 
   // Buscar usuários da API
   const fetchUsers = async () => {
@@ -48,7 +48,7 @@ export function Admin() {
         password,
         perfil,
         ativo: true,
-        marca
+        cliente
       });
 
       alert("Usuário criado com sucesso!");
@@ -56,7 +56,7 @@ export function Admin() {
       setEmail("");
       setPassword("");
       setPerfil("user");
-      setMarca("");
+      setCliente("");
 
       fetchUsers()
     } catch (error: any) {
@@ -79,7 +79,7 @@ export function Admin() {
                 <div>
                   <p className="font-semibold">{user.nome}</p>
                   <p className="text-sm text-gray-600">{user.email}</p>
-                  <p className="text-xs text-gray-500">Perfil: {user.perfil} | Marca: {user.marca === "ALL" ? "Todas" : user.marca}</p>
+                  <p className="text-xs text-gray-500">Perfil: {user.perfil} | Marca: {user.cliente === "ALL" ? "Todas" : user.cliente}</p>
                 </div>
                 <span
                   className={`px-2 py-1 text-xs rounded ${user.ativo === "TRUE" ? "bg-green-200 text-green-800" : "bg-red-200 text-red-800"
@@ -136,8 +136,8 @@ export function Admin() {
           <input
             type="text"
             name="marca"
-            value={marca}
-            onChange={(e) => setMarca(e.target.value)}
+            value={cliente}
+            onChange={(e) => setCliente(e.target.value)}
             placeholder="Marca"
             className="w-full border rounded px-3 py-2"
             required

@@ -112,7 +112,7 @@ export function Painel() {
   }
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-">
+    <div className="p-6 max-w-[95vw] h-screen flex flex-col mx-auto">
       {/* Renderiza só se não estiver carregando os dados da API */}
       {!loading && !errorApi && (
         <div className="text-2xl mb-10">
@@ -227,9 +227,9 @@ export function Painel() {
 
       {/* Renderiza se não estiver carregando os dados da API */}
       {!loading && !errorApi && (
-        <div className="max-h-[73vh] overflow-y-auto border border-gray-400 rounded-lg shadow-md">
+        <div className="flex-1 min-h-0 overflow-y-auto border border-gray-400 rounded-lg shadow-md">
           <table className="w-full scroll-smooth border-collapse">
-            <thead className="bg-purple-100 sticky top-0">
+            <thead className="bg-purple-100 text-gray-700 sticky top-0">
               <tr className="border-b border-gray-400">
                 <th className="p-3 text-left">Cliente</th>
                 <th className="p-3 text-left">Marca</th>

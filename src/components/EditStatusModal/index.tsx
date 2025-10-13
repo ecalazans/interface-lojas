@@ -99,9 +99,9 @@ export function EditStatusModal({ store, onClose, onUpdated }: EditStatusModalPr
       // Pode salvar (alteração válida)
       payload = {
         ...payload,
-        ...(numeroChamadoAtivo !== store.chamado_ativo && { chamado: numeroChamadoAtivo }),
-        ...(motivoAtivo !== store.motivo_ativo && { motivo: motivoAtivo }),
-        ...(responsavelAtivo !== store.responsavel_ativo && { responsavel: responsavelAtivo }),
+        ...(numeroChamadoInativo !== store.chamado_inativo && { chamado: numeroChamadoInativo }),
+        ...(motivoInativo !== store.motivo_inativo && { motivo: motivoInativo }),
+        ...(responsavelInativo !== store.responsavel_inativo && { responsavel: responsavelInativo }),
         ...(tipo !== store.tipo && { tipo })
       };
     }

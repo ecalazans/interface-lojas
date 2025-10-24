@@ -46,7 +46,7 @@ O sistema foi criado para centralizar o **controle de lojas**, oferecendo:
 git clone https://github.com/ecalazans/interface-lojas.git
 
 # 2. Acesse a pasta
-cd controle-lojas-frontend
+cd interface-lojas
 
 # 3. Instale as dependências
 npm install

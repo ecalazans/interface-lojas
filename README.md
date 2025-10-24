@@ -43,7 +43,7 @@ O sistema foi criado para centralizar o **controle de lojas**, oferecendo:
 ## ⚙️ Como Executar o Projeto
 ```
 # 1. Clone o repositório
-git clone https://github.com/seuusuario/controle-lojas-frontend.git
+git clone https://github.com/ecalazans/interface-lojas.git
 
 # 2. Acesse a pasta
 cd controle-lojas-frontend
